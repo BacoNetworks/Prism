@@ -113,8 +113,6 @@ public class InventoryListener {
                         continue;
                     }
 
-                    Prism.getInstance().getLogger().debug("Item Remove - {} x{}",
-                            transaction.getOriginal().getType().getId(), transaction.getOriginal().getQuantity() - transaction.getFinal().getQuantity());
 
                     eventBuilder
                             .event(PrismEvents.ITEM_INSERT)
@@ -130,8 +128,6 @@ public class InventoryListener {
                         continue;
                     }
 
-                    Prism.getInstance().getLogger().debug("Item Insert - {} x{}",
-                            transaction.getFinal().getType().getId(), transaction.getFinal().getQuantity() - transaction.getOriginal().getQuantity());
 
                     eventBuilder
                             .event(PrismEvents.ITEM_REMOVE)
@@ -148,8 +144,6 @@ public class InventoryListener {
                     continue;
                 }
 
-                Prism.getInstance().getLogger().debug("Item Remove - {} x{}",
-                        transaction.getOriginal().getType().getId(), transaction.getOriginal().getQuantity() - transaction.getFinal().getQuantity());
 
                 eventBuilder
                         .event(PrismEvents.ITEM_REMOVE)
@@ -164,9 +158,6 @@ public class InventoryListener {
                 if (!Prism.getInstance().getConfig().getEventCategory().isItemInsert()) {
                     continue;
                 }
-
-                Prism.getInstance().getLogger().debug("Item Insert - {} x{}",
-                        transaction.getFinal().getType().getId(), transaction.getFinal().getQuantity() - transaction.getOriginal().getQuantity());
 
                 eventBuilder.event(PrismEvents.ITEM_INSERT)
                         .itemStack(transaction.getFinal(), transaction.getFinal().getQuantity() - transaction.getOriginal().getQuantity())
@@ -198,7 +189,6 @@ public class InventoryListener {
                 quantity -= transaction.getOriginal().getQuantity();
             }
 
-            Prism.getInstance().getLogger().debug("Inventory pickup - {} x{}", itemStack.getType().getId(), quantity);
 
             PrismRecord.create()
                     .source(event.getCause())
@@ -232,7 +222,6 @@ public class InventoryListener {
             }
 
             ItemStackSnapshot itemStack = item.item().get();
-            Prism.getInstance().getLogger().debug("Inventory dropped - {} x{}", itemStack.getType().getId(), itemStack.getQuantity());
 
             PrismRecord.create()
                     .source(event.getCause())

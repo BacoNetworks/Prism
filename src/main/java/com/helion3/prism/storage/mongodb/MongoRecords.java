@@ -157,7 +157,6 @@ public class MongoRecords implements StorageAdapterRecords {
        for (DataContainer container : containers) {
            Document document = documentFromView(container);
 
-           // Prism.getInstance().getLogger().debug(DataUtil.jsonFromDataView(container).toString());
 
            // TTL
            if (expires) {
@@ -293,7 +292,6 @@ public class MongoRecords implements StorageAdapterRecords {
            pipeline.add(limit);
 
            aggregated = collection.aggregate(pipeline);
-           Prism.getInstance().getLogger().debug("MongoDB Query: " + pipeline);
        } else {
            // Aggregation pipeline
            List<Document> pipeline = new ArrayList<>();
@@ -302,7 +300,6 @@ public class MongoRecords implements StorageAdapterRecords {
            pipeline.add(limit);
 
            aggregated = collection.aggregate(pipeline);
-           Prism.getInstance().getLogger().debug("MongoDB Query: " + pipeline);
        }
 
        // Iterate results and build our event record list

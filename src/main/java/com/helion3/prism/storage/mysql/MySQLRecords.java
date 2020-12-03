@@ -116,10 +116,6 @@ public class MySQLRecords implements StorageAdapterRecords {
                 i++;
             }
 
-            if (containers.size() != extraData.size()) {
-                Prism.getInstance().getLogger().debug("Container has more information than we have extra entries for.");
-            }
-
             writeExtraData(extraDataMap);
         }
 

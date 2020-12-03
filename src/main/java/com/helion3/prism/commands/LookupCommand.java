@@ -62,7 +62,6 @@ public class LookupCommand {
                 } catch(Exception e) {
                     String message = e.getMessage() == null ? "Unknown error. Please check the console." : e.getMessage();
                     source.sendMessage(Format.error(Text.of(message)));
-                    e.printStackTrace();
                 }
 
                 return CommandResult.success();

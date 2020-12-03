@@ -102,7 +102,6 @@ public class MongoStorageAdapter implements StorageAdapter {
             getCollection(collectionEventRecordsName).createIndex(new Document("Expires", 1), options);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -125,8 +124,7 @@ public class MongoStorageAdapter implements StorageAdapter {
    protected static MongoCollection<Document> getCollection(String collectionName) {
        try {
            return database.getCollection(collectionName);
-       } catch (Exception e) {
-           e.printStackTrace();
+       } catch (Exception ignored) {
        }
        return null;
    }

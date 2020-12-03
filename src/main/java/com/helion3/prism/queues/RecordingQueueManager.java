@@ -68,9 +68,8 @@ public class RecordingQueueManager implements Runnable {
         if (eventsSaveBatch.size() > 0) {
             try {
                 Prism.getInstance().getStorageAdapter().records().write(eventsSaveBatch);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 // @todo handle failures
-                e.printStackTrace();
             }
         }
     }

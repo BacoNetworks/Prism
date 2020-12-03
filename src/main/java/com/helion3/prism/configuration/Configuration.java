@@ -165,8 +165,7 @@ public class Configuration {
         if (!blacklist.isVirtual()) {
             try {
                 getConfig().getGeneralCategory().setBlacklist(blacklist.getList(TypeToken.of(String.class), Lists.newArrayList()));
-            } catch (ObjectMappingException e) {
-                e.printStackTrace();
+            } catch (ObjectMappingException ignored) {
             }
         }
     }

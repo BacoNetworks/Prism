@@ -95,8 +95,7 @@ public class ParameterTime extends SimpleParameterHandler {
             Date date = DateUtil.parseTimeStringToDate(since, false);
             query.addCondition(FieldCondition.of(DataQueries.Created, MatchRule.GREATER_THAN_EQUAL, date));
             return Optional.of(Pair.of("since", since));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
 
         return Optional.empty();

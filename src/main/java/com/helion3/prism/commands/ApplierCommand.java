@@ -68,7 +68,6 @@ public class ApplierCommand {
                 future.thenAccept((v) -> runApplier(session, sort));
             } catch(Exception e) {
                 source.sendMessage(Format.error(Text.of(e.getMessage())));
-                e.printStackTrace();
             }
 
             return CommandResult.success();
@@ -109,13 +108,11 @@ public class ApplierCommand {
                                     }
                                 } catch (Exception e) {
                                     source.sendMessage(Format.error(Text.of(e.getMessage())));
-                                    e.printStackTrace();
                                 }
                             });
                             sendResults(source, actionResults);
                         }).submit(Prism.getInstance());
-                    } catch(Exception e) {
-                        e.printStackTrace();
+                    } catch(Exception ignored) {
                     }
 
                     if (source instanceof Player) {
@@ -141,7 +138,6 @@ public class ApplierCommand {
             });
         } catch (Exception e) {
             source.sendMessage(Format.error(Text.of(e.getMessage())));
-            e.printStackTrace();
         }
     }
 

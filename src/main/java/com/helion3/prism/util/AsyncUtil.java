@@ -64,12 +64,10 @@ public class AsyncUtil {
                         }
                     } catch(Exception e) {
                         session.getCommandSource().sendMessage(Format.error(e.getMessage()));
-                        e.printStackTrace();
                     }
                 });
             } catch (Exception e) {
                 callback.error(e);
-                e.printStackTrace();
             }
         }).submit(Prism.getInstance().getPluginContainer());
     }

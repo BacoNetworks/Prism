@@ -94,7 +94,6 @@ public class H2StorageAdapter implements StorageAdapter {
 
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }

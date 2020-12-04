@@ -222,6 +222,9 @@ public class InventoryListener {
             }
 
             ItemStackSnapshot itemStack = item.item().get();
+            if(itemStack == null){
+                continue;
+            }
 
             PrismRecord.create()
                     .source(event.getCause())

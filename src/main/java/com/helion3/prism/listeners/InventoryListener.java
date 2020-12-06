@@ -222,16 +222,15 @@ public class InventoryListener {
             }
 
             ItemStackSnapshot itemStack = item.item().get();
-            if(itemStack == null){
-                continue;
+            try {
+                PrismRecord.create()
+                        .source(event.getCause())
+                        .event(PrismEvents.ITEM_DROP)
+                        .itemStack(itemStack)
+                        .location(player.getLocation())
+                        .buildAndSave();
+            } catch (Exception ignored) {
             }
-
-            PrismRecord.create()
-                    .source(event.getCause())
-                    .event(PrismEvents.ITEM_DROP)
-                    .itemStack(itemStack)
-                    .location(player.getLocation())
-                    .buildAndSave();
         }
     }
 

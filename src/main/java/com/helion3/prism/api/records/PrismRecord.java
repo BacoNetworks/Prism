@@ -39,8 +39,12 @@ import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
 import org.spongepowered.api.item.ItemTypes;
@@ -401,19 +405,40 @@ public class PrismRecord {
          * @return The created EventBuilder instance
          */
         public PrismRecord.EventBuilder source(Cause cause) {
-            Player player = cause.first(Player.class).orElse(null);
-            if (player != null) {
-                return new PrismRecord.EventBuilder(player);
+            final EventContext context = cause.getContext();
+            User user = cause.first(User.class).orElse(null);
+            if (user == null) {
+                user = context.get(EventContextKeys.OWNER)
+                        .orElse(context.get(EventContextKeys.NOTIFIER)
+                                .orElse(context.get(EventContextKeys.CREATOR)
+                                        .orElse(null)));
             }
 
+            if (user != null) {
+                return new PrismRecord.EventBuilder(user);
+            }
+
+            //Explosion
+            final Living living = context.get(EventContextKeys.IGNITER).orElse(null);
+            if (living instanceof User) {
+                user = (User) living;
+                return new PrismRecord.EventBuilder(user);
+            }
+
+            //EntityDamageSource
             EntityDamageSource attacker = cause.first(EntityDamageSource.class).orElse(null);
             if (attacker != null) {
                 return new PrismRecord.EventBuilder(attacker);
             }
-
+            //EntityDamageSourceIndirect
             IndirectEntityDamageSource indirectAttacker = cause.first(IndirectEntityDamageSource.class).orElse(null);
             if (indirectAttacker != null) {
                 return new PrismRecord.EventBuilder(indirectAttacker);
+            }
+
+            //FakePlayer
+            if(context.get(EventContextKeys.FAKE_PLAYER).isPresent()){
+                return new PrismRecord.EventBuilder(context.get(EventContextKeys.FAKE_PLAYER).get());
             }
 
             if (!cause.all().isEmpty()) {

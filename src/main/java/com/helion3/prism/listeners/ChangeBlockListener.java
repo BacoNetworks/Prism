@@ -36,7 +36,10 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public class ChangeBlockListener {
 
@@ -47,81 +50,93 @@ public class ChangeBlockListener {
      */
     @Listener(order = Order.POST)
     public void onChangeBlock(ChangeBlockEvent event) {
+        final Cause cause = event.getCause();
 
-        if (event.getCause().allOf(PluginContainer.class).stream().map(PluginContainer::getId).anyMatch(id ->
+        if (cause.allOf(PluginContainer.class).stream().map(PluginContainer::getId).anyMatch(id ->
                 Prism.getInstance().getConfig().getGeneralCategory().getBlacklist().contains(id))) {
             // Don't do anything
             return;
         }
 
-        if (event.getCause().first(Player.class).map(Player::getUniqueId).map(Prism.getInstance().getActiveWands()::contains).orElse(false)) {
+        if (cause.first(Player.class).map(Player::getUniqueId).map(Prism.getInstance().getActiveWands()::contains).orElse(false)) {
             // Cancel and exit event here, not supposed to place/track a block with an active wand.
             event.setCancelled(true);
             return;
         }
 
-        if (event.getTransactions().isEmpty()
-                || (!Prism.getInstance().getConfig().getEventCategory().isBlockBreak()
+        if (event.getTransactions().isEmpty() || (!Prism.getInstance().getConfig().getEventCategory().isBlockBreak()
                 && !Prism.getInstance().getConfig().getEventCategory().isBlockDecay()
                 && !Prism.getInstance().getConfig().getEventCategory().isBlockGrow()
                 && !Prism.getInstance().getConfig().getEventCategory().isBlockPlace())) {
             return;
         }
 
-        for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+        for (final Transaction<BlockSnapshot> transaction : event.getTransactions()) {
             if (!transaction.isValid() || !transaction.getOriginal().getLocation().isPresent()) {
                 continue;
             }
 
-            BlockType originalBlockType = transaction.getOriginal().getState().getType();
-            BlockType finalBlockType = transaction.getFinal().getState().getType();
-
-            PrismRecord.EventBuilder eventBuilder = PrismRecord.create()
-                    .source(event.getCause())
-                    .blockOriginal(transaction.getOriginal())
-                    .blockReplacement(transaction.getFinal())
-                    .location(transaction.getOriginal().getLocation().get());
+            final Location<World> location = transaction.getOriginal().getLocation().get();
+            final BlockType originalBlockType = transaction.getOriginal().getState().getType();
+            final BlockType finalBlockType = transaction.getFinal().getState().getType();
+            final String targetOriginal = originalBlockType.getId().replace("_", " ");
+            final String targetFinal = finalBlockType.getId().replace("_", " ");
 
             if (event instanceof ChangeBlockEvent.Break) {
                 if (!Prism.getInstance().getConfig().getEventCategory().isBlockBreak()
                         || BlockUtil.rejectBreakCombination(originalBlockType, finalBlockType)
-                        || EventUtil.rejectBreakEventIdentity(originalBlockType, finalBlockType, event.getCause())) {
+                        || EventUtil.rejectBreakEventIdentity(originalBlockType, finalBlockType, cause)) {
                     continue;
                 }
+                PrismRecord.create()
+                        .source(cause)
+                        .target(targetOriginal)
+                        .location(location)
+                        .event(PrismEvents.BLOCK_BREAK).
+                        buildAndSave();
+                return;
+            }
 
-                eventBuilder
-                        .event(PrismEvents.BLOCK_BREAK)
-                        .target(originalBlockType.getId().replace("_", " "))
-                        .buildAndSave();
-            } else if (event instanceof ChangeBlockEvent.Decay) {
+            if (event instanceof ChangeBlockEvent.Decay) {
                 if (!Prism.getInstance().getConfig().getEventCategory().isBlockDecay()) {
                     continue;
                 }
+                PrismRecord.create()
+                        .source(cause)
+                        .target(targetOriginal)
+                        .location(location)
+                        .event(PrismEvents.BLOCK_DECAY).
+                        buildAndSave();
+                return;
+            }
 
-                eventBuilder
-                        .event(PrismEvents.BLOCK_DECAY)
-                        .target(originalBlockType.getId().replace("_", " "))
-                        .buildAndSave();
-            } else if (event instanceof ChangeBlockEvent.Grow) {
+            if (event instanceof ChangeBlockEvent.Grow) {
                 if (!Prism.getInstance().getConfig().getEventCategory().isBlockGrow()) {
                     continue;
                 }
+                PrismRecord.create()
+                        .source(cause)
+                        .target(targetFinal)
+                        .location(location)
+                        .event(PrismEvents.BLOCK_GROW).
+                        buildAndSave();
+                return;
+            }
 
-                eventBuilder
-                        .event(PrismEvents.BLOCK_GROW)
-                        .target(finalBlockType.getId().replace("_", " "))
-                        .buildAndSave();
-            } else if (event instanceof ChangeBlockEvent.Place) {
+            if (event instanceof ChangeBlockEvent.Place) {
                 if (!Prism.getInstance().getConfig().getEventCategory().isBlockPlace()
                         || BlockUtil.rejectPlaceCombination(originalBlockType, finalBlockType)
-                        || EventUtil.rejectPlaceEventIdentity(originalBlockType, finalBlockType, event.getCause())) {
+                        || EventUtil.rejectPlaceEventIdentity(originalBlockType, finalBlockType, cause)) {
                     continue;
                 }
 
-                eventBuilder
-                        .event(PrismEvents.BLOCK_PLACE)
-                        .target(finalBlockType.getId().replace("_", " "))
-                        .buildAndSave();
+                PrismRecord.create()
+                        .source(cause)
+                        .target(targetFinal)
+                        .location(location)
+                        .event(PrismEvents.BLOCK_PLACE).
+                        buildAndSave();
+                return;
             }
         }
     }

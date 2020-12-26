@@ -23,6 +23,7 @@
  */
 package com.helion3.prism.commands;
 
+import com.helion3.prism.api.flags.Flag;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.command.CommandResult;
@@ -49,6 +50,7 @@ public class NearCommand {
                 // Create a new query session
                 final QuerySession session = new QuerySession(source);
                 session.newQuery().addCondition(ConditionGroup.from(((Player) source).getLocation(), radius));
+                session.addFlag(Flag.NO_GROUP);
 
                 // Pass off to an async lookup helper
                 AsyncUtil.lookup(session);

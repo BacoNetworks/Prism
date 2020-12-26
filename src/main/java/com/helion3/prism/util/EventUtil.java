@@ -50,11 +50,7 @@ public class EventUtil {
         }
 
         // Interesting bugs...
-        if (a.equals(BlockTypes.AIR) && b.equals(BlockTypes.AIR)) {
-            return true;
-        }
-
-        return false;
+        return a.equals(BlockTypes.AIR) && b.equals(BlockTypes.AIR);
     }
 
     /**

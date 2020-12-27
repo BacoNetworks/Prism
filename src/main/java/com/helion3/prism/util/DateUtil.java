@@ -67,7 +67,7 @@ public class DateUtil {
         }
 
         if( diff[0] == 0 && diff[1] == 0 && diff[2] <= 1 ) {
-            result = "just now";
+            result = "0m ago";
         }
 
         return result;

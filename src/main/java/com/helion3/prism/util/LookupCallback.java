@@ -122,8 +122,7 @@ public class LookupCallback extends AsyncCallback {
 
         if (result instanceof ResultComplete) {
             ResultComplete resultComplete = (ResultComplete) result;
-
-            resultMessage.append(Text.of(TextColors.WHITE, resultComplete.getRelativeTime()));
+            resultMessage = resultMessage.insert(0, Text.of(TextColors.WHITE, "[", TextColors.GOLD, resultComplete.getRelativeTime(), TextColors.WHITE, "] "));
             hoverMessage.append(Text.of(TextColors.DARK_GRAY, "Time: ", TextColors.WHITE, resultComplete.getTime(), Text.NEW_LINE));
 
             DataView location = (DataView) resultComplete.data.get(DataQueries.Location).orElse(null);
@@ -133,6 +132,12 @@ public class LookupCallback extends AsyncCallback {
                 int z = location.getInt(DataQueries.Z).orElse(0);
                 World world = location.get(DataQueries.WorldUuid).flatMap(TypeUtil::uuidFromObject).flatMap(Sponge.getServer()::getWorld).orElse(null);
 
+                //Add tppos since we have the coords to suggested commands
+                if(world != null){
+                    resultMessage.onClick(TextActions.suggestCommand("/tppos " + world.getName() + " " + x + " " + y + " " + z));
+                }else{
+                    resultMessage.onClick(TextActions.suggestCommand("/tppos " + x + " " + y + " " + z));
+                }
                 hoverMessage.append(Text.of(TextColors.DARK_GRAY, "Location: ", TextColors.WHITE, Format.location(x, y, z, world, false)));
                 if (this.querySession.hasFlag(Flag.EXTENDED)) {
                     resultMessage.append(Text.of(Text.NEW_LINE, TextColors.GRAY, " - ", Format.location(x, y, z, world, true)));
@@ -140,7 +145,6 @@ public class LookupCallback extends AsyncCallback {
                 }
             }
         }
-
         resultMessage.onHover(TextActions.showText(hoverMessage.build()));
         return resultMessage.build();
     }

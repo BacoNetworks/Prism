@@ -414,14 +414,13 @@ public class PrismRecord {
                                         .orElse(null)));
             }
 
-            if (user != null) {
-                return new PrismRecord.EventBuilder(user);
-            }
-
             //Explosion
             final Living living = context.get(EventContextKeys.IGNITER).orElse(null);
             if (living instanceof User) {
                 user = (User) living;
+            }
+
+            if (user != null) {
                 return new PrismRecord.EventBuilder(user);
             }
 

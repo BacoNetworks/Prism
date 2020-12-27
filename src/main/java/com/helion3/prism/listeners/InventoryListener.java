@@ -39,6 +39,7 @@ import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
@@ -71,7 +72,7 @@ public class InventoryListener {
             }
 
             CarriedInventory<? extends Carrier> carriedInventory = (CarriedInventory<? extends Carrier>) transaction.getSlot().parent();
-            if (carriedInventory.getCarrier().filter(Player.class::isInstance).isPresent()) {
+            if (carriedInventory.getArchetype() == InventoryArchetypes.PLAYER || carriedInventory.getCarrier().filter(Player.class::isInstance).isPresent()) {
                 return;
             }
 
@@ -113,12 +114,10 @@ public class InventoryListener {
                         continue;
                     }
 
-
                     eventBuilder
-                            .event(PrismEvents.ITEM_INSERT)
+                            .event(PrismEvents.ITEM_REMOVE)
                             .itemStack(transaction.getOriginal(), transaction.getOriginal().getQuantity() - transaction.getFinal().getQuantity())
                             .buildAndSave();
-
                     continue;
                 }
 
@@ -128,12 +127,10 @@ public class InventoryListener {
                         continue;
                     }
 
-
                     eventBuilder
-                            .event(PrismEvents.ITEM_REMOVE)
+                            .event(PrismEvents.ITEM_INSERT)
                             .itemStack(transaction.getFinal(), transaction.getFinal().getQuantity() - transaction.getOriginal().getQuantity())
                             .buildAndSave();
-
                     continue;
                 }
             }
@@ -143,7 +140,6 @@ public class InventoryListener {
                 if (!Prism.getInstance().getConfig().getEventCategory().isItemRemove()) {
                     continue;
                 }
-
 
                 eventBuilder
                         .event(PrismEvents.ITEM_REMOVE)
@@ -242,13 +238,12 @@ public class InventoryListener {
      */
     @Listener(order = Order.POST)
     public void onInteractInventory(InteractInventoryEvent event, @Root Player player) {
-        if (!(event.getTargetInventory() instanceof CarriedInventory)
-                || (!Prism.getInstance().getConfig().getEventCategory().isInventoryClose() && !Prism.getInstance().getConfig().getEventCategory().isInventoryOpen())) {
+        if (!(event.getTargetInventory() instanceof CarriedInventory) || (!Prism.getInstance().getConfig().getEventCategory().isInventoryClose() && !Prism.getInstance().getConfig().getEventCategory().isInventoryOpen())) {
             return;
         }
 
         CarriedInventory<? extends Carrier> carriedInventory = (CarriedInventory<? extends Carrier>) event.getTargetInventory();
-        if (carriedInventory.getCarrier().filter(Player.class::isInstance).isPresent()) {
+        if (carriedInventory.getArchetype() == InventoryArchetypes.PLAYER || carriedInventory.getCarrier().filter(Player.class::isInstance).isPresent()) {
             return;
         }
 
@@ -265,15 +260,20 @@ public class InventoryListener {
                 .map(Text::toPlain)
                 .orElse(carriedInventory.getClass().getSimpleName());
 
-        PrismRecord.EventBuilder eventBuilder = PrismRecord.create()
-                .source(event.getCause())
-                .container(title)
-                .location(location);
-
         if (event instanceof InteractInventoryEvent.Close && Prism.getInstance().getConfig().getEventCategory().isInventoryClose()) {
-            eventBuilder.event(PrismEvents.INVENTORY_CLOSE).buildAndSave();
+            PrismRecord.create()
+                    .source(event.getCause())
+                    .container(title)
+                    .location(location)
+                    .event(PrismEvents.INVENTORY_CLOSE)
+                    .buildAndSave();
         } else if (event instanceof InteractInventoryEvent.Open && Prism.getInstance().getConfig().getEventCategory().isInventoryOpen()) {
-            eventBuilder.event(PrismEvents.INVENTORY_OPEN).buildAndSave();
+            PrismRecord.create()
+                    .source(event.getCause())
+                    .container(title)
+                    .location(location)
+                    .event(PrismEvents.INVENTORY_OPEN)
+                    .buildAndSave();
         }
     }
 }

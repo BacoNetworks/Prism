@@ -33,6 +33,7 @@ import com.helion3.prism.api.records.ResultComplete;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataView;
+import org.spongepowered.api.data.value.mutable.ListValue;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -105,6 +106,11 @@ public class LookupCallback extends AsyncCallback {
         String id = result.data.getString(DataQueries.Id).orElse(null);
         if (StringUtils.isNotBlank(id)) {
             hoverMessage.append(Text.of(TextColors.DARK_GRAY, "Id: ", TextColors.WHITE, id, Text.NEW_LINE));
+        }
+
+        String finalSignData = result.data.getString(DataQueries.FinalSignData).orElse(null);
+        if (StringUtils.isNotBlank(finalSignData)) {
+            hoverMessage.append(Text.of(TextColors.DARK_GRAY, "Sign Text: ", TextColors.WHITE, finalSignData, Text.NEW_LINE));
         }
 
         String container = result.data.getString(DataQueries.Container).orElse(null);

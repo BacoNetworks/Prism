@@ -49,10 +49,7 @@ import com.helion3.prism.api.storage.StorageAdapter;
 import com.helion3.prism.commands.PrismCommands;
 import com.helion3.prism.configuration.Config;
 import com.helion3.prism.configuration.Configuration;
-import com.helion3.prism.listeners.ChangeBlockListener;
-import com.helion3.prism.listeners.EntityListener;
-import com.helion3.prism.listeners.InventoryListener;
-import com.helion3.prism.listeners.RequiredInteractListener;
+import com.helion3.prism.listeners.*;
 import com.helion3.prism.queues.RecordingQueueManager;
 import com.helion3.prism.storage.h2.H2StorageAdapter;
 import com.helion3.prism.storage.mongodb.MongoStorageAdapter;
@@ -156,6 +153,7 @@ public final class Prism {
         Sponge.getEventManager().registerListeners(getPluginContainer(), new ChangeBlockListener());
         Sponge.getEventManager().registerListeners(getPluginContainer(), new EntityListener());
         Sponge.getEventManager().registerListeners(getPluginContainer(), new InventoryListener());
+        Sponge.getEventManager().registerListeners(getPluginContainer(), new ChangeSignListener());
 
         // Events required for internal operation
         Sponge.getEventManager().registerListeners(getPluginContainer(), new RequiredInteractListener());

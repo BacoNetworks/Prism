@@ -51,6 +51,8 @@ public final class PrismEvents {
 
     public static final PrismEvent BLOCK_PLACE = PrismEvent.of("place", "Block Place", "placed", BlockResult.class);
 
+    public static final PrismEvent SIGN_EDIT = PrismEvent.of("sign_edit", "Sign Edited", "edited a sign", BlockResult.class);
+
     public static final PrismEvent ENTITY_DEATH = PrismEvent.of("death", "Entity Death", "killed", EntityResult.class);
 
     public static final PrismEvent COMMAND_EXECUTE = PrismEvent.of("command", "Command Execute", "executed", ResultComplete.class);
@@ -78,6 +80,7 @@ public final class PrismEvents {
                 BLOCK_DECAY,
                 BLOCK_GROW,
                 BLOCK_PLACE,
+                SIGN_EDIT,
                 ENTITY_DEATH,
                 COMMAND_EXECUTE,
                 INVENTORY_CLOSE,

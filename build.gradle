@@ -13,8 +13,6 @@ buildscript {
     }
 }
 
-apply plugin: "checkstyle"
-apply plugin: "com.github.hierynomus.license"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "eclipse"
 apply plugin: "idea"
@@ -28,20 +26,6 @@ group = "com.helion3"
 archivesBaseName = "prism"
 version = "git describe --tags".execute().text.trim()
 
-checkstyle {
-    configFile = file("checkstyle.xml")
-}
-
-license {
-    exclude("**/*.info")
-    exclude("assets/**")
-    header = file("HEADER.txt")
-    ignoreFailures = false
-    strictCheck = true
-    mapping {
-        java = "SLASHSTAR_STYLE"
-    }
-}
 
 configurations {
     provided {
@@ -52,14 +36,6 @@ configurations {
     compileJava.options.deprecation = true
     compileJava.options.encoding = "utf8"
     jar.dependsOn("shadowJar")
-    licenseMain.ext.name = project.archivesBaseName
-    licenseMain.ext.organization = "Helion3"
-    licenseMain.ext.url = "http://helion3.com/"
-    licenseMain.ext.year = "2015"
-    licenseTest.ext.name = licenseMain.ext.name
-    licenseTest.ext.organization = licenseMain.ext.organization
-    licenseTest.ext.url = licenseMain.ext.url
-    licenseTest.ext.year = licenseMain.ext.year
     project.ext.buildNumber = project.hasProperty("buildNumber") ? buildNumber : "0"
     project.ext.ciSystem = project.hasProperty("ciSystem") ? ciSystem : "unknown"
     project.ext.commit = project.hasProperty("commit") ? commit : "unknown"
@@ -69,7 +45,7 @@ repositories {
     jcenter()
     maven {
         name = "spongepowered"
-        url = "https://repo.spongepowered.org/maven"
+        url = "https://repo.spongepowered.org/repository/maven-public/"
     }
 }
 
@@ -81,7 +57,7 @@ dependencies {
     shadow("org.mongodb:mongo-java-driver:3.10.2")
     testCompile("org.mongodb:mongo-java-driver:3.10.2")
     annotationProcessor("org.spongepowered:spongeapi:7.1.0")
-    provided("org.spongepowered:spongeapi:7.1.0")
+    provided("org.spongepowered:spongeapi:7.3.0")
 }
 
 shadowJar {
@@ -97,7 +73,6 @@ jar {
                 "Created-By": System.properties["java.vm.version"] + " (" + System.properties["java.vm.vendor"] + ")",
                 "Implementation-Title": project.archivesBaseName,
                 "Implementation-Version": version + "+" + ciSystem + "-b" + buildNumber + ".git-" + commit,
-                "Implementation-Vendor": licenseMain.url
         )
     }
 

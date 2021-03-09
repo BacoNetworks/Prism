@@ -37,6 +37,8 @@ import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
+import org.spongepowered.api.data.value.mutable.ListValue;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.Living;
@@ -309,6 +311,16 @@ public class PrismRecord {
             container.remove(DataQueries.ContentVersion);
             container.remove(DataQueries.WorldName);
             DataUtil.writeToDataView(getDataContainer(), DataQueries.Location, location);
+            return this;
+        }
+
+        /**
+         * Helper method for sign text
+         *
+         * @param signText The edited sign text
+         */
+        public EventBuilder finalSignData(String signText) {
+            DataUtil.writeToDataView(getDataContainer(), DataQueries.FinalSignData, signText);
             return this;
         }
 

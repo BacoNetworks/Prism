@@ -45,6 +45,7 @@ public final class DataQueries {
     public static final DataQuery EventName = of("EventName");
     public static final DataQuery Id = of("Id");
     public static final DataQuery Location = of("Location");
+    public static final DataQuery FinalSignData = of("FinalSignData");
     public static final DataQuery OriginalBlock = of("Original");
     public static final DataQuery Player = of("Player");
     public static final DataQuery Position = of("Position");

@@ -259,11 +259,11 @@ public class InventoryListener {
                 .map(InventoryTitle::getValue)
                 .map(Text::toPlain)
                 .orElse(carriedInventory.getClass().getSimpleName());
-
         if (event instanceof InteractInventoryEvent.Close && Prism.getInstance().getConfig().getEventCategory().isInventoryClose()) {
             PrismRecord.create()
                     .source(event.getCause())
                     .container(title)
+                    .target(title)
                     .location(location)
                     .event(PrismEvents.INVENTORY_CLOSE)
                     .buildAndSave();
@@ -271,6 +271,7 @@ public class InventoryListener {
             PrismRecord.create()
                     .source(event.getCause())
                     .container(title)
+                    .target(title)
                     .location(location)
                     .event(PrismEvents.INVENTORY_OPEN)
                     .buildAndSave();

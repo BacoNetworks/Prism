@@ -292,8 +292,13 @@ public class PrismRecord {
         public EventBuilder itemStack(ItemStackSnapshot itemStack, int quantity) {
             Preconditions.checkNotNull(itemStack);
             Preconditions.checkArgument(itemStack.getType() != ItemTypes.NONE);
-
-            DataUtil.writeToDataView(getDataContainer(), DataQueries.Target, itemStack.getType().getId());
+            String target;
+            if(itemStack.get(Keys.DISPLAY_NAME).isPresent()){
+                target = itemStack.get(Keys.DISPLAY_NAME).get().toPlain();
+            }else{
+                target = itemStack.getTranslation().get();
+            }
+            DataUtil.writeToDataView(getDataContainer(), DataQueries.Target, target);
             DataUtil.writeToDataView(getDataContainer(), DataQueries.Quantity, quantity);
             return this;
         }

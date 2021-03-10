@@ -107,6 +107,7 @@ public final class Prism {
     private Path path;
 
     private Configuration configuration;
+
     private StorageAdapter storageAdapter;
 
     private final Set<UUID> activeWands = Sets.newHashSet();
@@ -229,6 +230,10 @@ public final class Prism {
         return configuration;
     }
 
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     public Config getConfig() {
         Preconditions.checkState(getConfiguration() != null, "Prism has not been initialized!");
         return getConfiguration().getConfig();
@@ -236,6 +241,10 @@ public final class Prism {
 
     public StorageAdapter getStorageAdapter() {
         return storageAdapter;
+    }
+
+    public void setStorageAdapter(StorageAdapter storageAdapter) {
+        this.storageAdapter = storageAdapter;
     }
 
     /**

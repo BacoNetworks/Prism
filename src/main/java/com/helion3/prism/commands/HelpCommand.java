@@ -41,6 +41,7 @@ public class HelpCommand {
                 source.sendMessage(Format.message("/pr [rb|rollback] (params)", TextColors.GRAY, " - Reverse changes, limited by parameters."));
                 source.sendMessage(Format.message("/pr [rs|restore] (params)", TextColors.GRAY, " - Re-apply changes, limited by parameters."));
                 source.sendMessage(Format.message("/pr undo", TextColors.GRAY, " - Reverse your last rollback/restore."));
+                source.sendMessage(Format.message("/pr reload", TextColors.GRAY, " - Reload prism configuration."));
                 source.sendMessage(Format.message("/pr i", TextColors.GRAY, " - Toggle the inspection wand."));
                 return CommandResult.success();
             }).build();

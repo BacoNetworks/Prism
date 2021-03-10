@@ -29,7 +29,6 @@ import com.helion3.prism.api.records.PrismRecord;
 import com.helion3.prism.util.PrismEvents;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.hanging.Hanging;
-import org.spongepowered.api.entity.hanging.ItemFrame;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -37,12 +36,12 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
-import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
-import org.spongepowered.api.event.entity.living.humanoid.HandInteractEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+
+import java.util.List;
 
 public class EntityListener {
 
@@ -113,15 +112,17 @@ public class EntityListener {
     }
 
     /**
-     * Saves event records when an is spawned (Used for tracking when item frames, armor stands and paintings are placed
+     * Saves event records when an entity is spawned (Used for tracking when item frames, armor stands and paintings are placed)
      *
      * @param event SpawnEntityEvent
      */
     @Listener
-    public void onEntitySpawn(SpawnEntityEvent event) {
+    public void onEntitySpawn(SpawnEntityEvent event, @Getter("getEntities") List<Entity> entities) {
         if (Prism.getInstance().getConfig().getEventCategory().isBlockPlace()) {
-            event.filterEntities(entity -> {
+            for (int i = 0, entitiesSize = entities.size(); i < entitiesSize; i++) {
+                Entity entity = entities.get(i);
                 if (entity instanceof Hanging || entity instanceof ArmorStand) {
+                    final Cause cause = event.getCause();
                     final String targetFinal = entity.getType().getId().replace("_", " ");
                     PrismRecord.create()
                             .source(cause)
@@ -130,8 +131,7 @@ public class EntityListener {
                             .event(PrismEvents.BLOCK_PLACE).
                             buildAndSave();
                 }
-                return true;
-            });
+            }
         }
     }
 

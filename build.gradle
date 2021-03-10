@@ -25,7 +25,7 @@ targetCompatibility = 1.8
 
 group = "com.helion3"
 archivesBaseName = "prism"
-version = "git describe --tags".execute().text.trim()
+version = "3.1.0"
 
 license {
     exclude("**/*.info")

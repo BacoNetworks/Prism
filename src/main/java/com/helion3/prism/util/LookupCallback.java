@@ -97,7 +97,7 @@ public class LookupCallback extends AsyncCallback {
             hoverMessage.append(Text.of(TextColors.DARK_GRAY, "Quantity: ", TextColors.WHITE, quantity, Text.NEW_LINE));
         }
 
-        String target = result.data.getString(DataQueries.Target).orElse("Unknown");
+        String target = result.data.getString(DataQueries.Target).orElse(null);
         if (StringUtils.isNotBlank(target)) {
             resultMessage.append(Text.of(TextColors.DARK_AQUA, Format.item(target, false), " "));
             hoverMessage.append(Text.of(TextColors.DARK_GRAY, "Target: ", TextColors.WHITE, target, Text.NEW_LINE));

@@ -52,11 +52,14 @@ public class ChangeBlockListener {
     public void onChangeBlock(ChangeBlockEvent event) {
         final Cause cause = event.getCause();
 
+        /*
         if (cause.allOf(PluginContainer.class).stream().map(PluginContainer::getId).anyMatch(id ->
                 Prism.getInstance().getConfig().getGeneralCategory().getBlacklist().contains(id))) {
             // Don't do anything
             return;
         }
+
+         */
 
         if (cause.first(Player.class).map(Player::getUniqueId).map(Prism.getInstance().getActiveWands()::contains).orElse(false)) {
             // Cancel and exit event here, not supposed to place/track a block with an active wand.

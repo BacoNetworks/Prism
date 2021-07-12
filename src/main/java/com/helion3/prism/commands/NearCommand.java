@@ -43,7 +43,7 @@ public class NearCommand {
         return CommandSpec.builder()
             .description(Text.of("Alias of /pr l r:(default radius)"))
             .permission("prism.lookup")
-                .arguments(GenericArguments.optional(GenericArguments.integer(Text.of("radius"))))
+            .arguments(GenericArguments.optional(GenericArguments.integer(Text.of("radius"))))
             .executor((source, args) -> {
                 int radius = args.<Integer>getOne("radius").orElse(Prism.getInstance().getConfig().getDefaultCategory().getRadius());
                 if(radius > 100){

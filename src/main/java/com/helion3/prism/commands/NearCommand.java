@@ -24,6 +24,7 @@
 package com.helion3.prism.commands;
 
 import com.helion3.prism.api.flags.Flag;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.command.CommandResult;
@@ -42,9 +43,12 @@ public class NearCommand {
         return CommandSpec.builder()
             .description(Text.of("Alias of /pr l r:(default radius)"))
             .permission("prism.lookup")
+                .arguments(GenericArguments.optional(GenericArguments.integer(Text.of("radius"))))
             .executor((source, args) -> {
-                int radius = Prism.getInstance().getConfig().getDefaultCategory().getRadius();
-
+                int radius = args.<Integer>getOne("radius").orElse(Prism.getInstance().getConfig().getDefaultCategory().getRadius());
+                if(radius > 100){
+                    radius = 100;
+                }
                 source.sendMessage(Format.heading("Querying records..."));
 
                 // Create a new query session
